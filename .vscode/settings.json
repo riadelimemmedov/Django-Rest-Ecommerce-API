@@ -1,0 +1,27 @@
+{   
+    //!Black Formatting Code
+    "editor.formatOnSave": true,//when change code automatically saved
+    "python.formatting.provider": "black",//formatting tool,optional using
+    "python.formatting.blackArgs": [
+        "--line-length",//how long to be each line our code,well know we limited our code length each line when formatting code using black
+        "88",//length each line
+    ],
+
+
+    //!Flake8 Linting Code => I commented this code,not mandatory using this line of code our codebase
+    // "python.linting.enabled":true,
+    // "python.linting.lintOnSave":true,
+    // "python.linting.flake8Enabled":true,
+    // "python.linting.flake8Args": [
+        // "--max-line-length",//how long to be each line our code,well know we limited our code length each line when formatting code using black
+        // "88",//length each line
+    // ],
+
+
+    //!Common Python
+    "[python]":{
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+        }
+    }
+}
