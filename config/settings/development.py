@@ -15,6 +15,7 @@ DEBUG = True
 #         }
 # }
 
+
 # Migrate Postgress and Docker
 DATABASES = {
     "default": {

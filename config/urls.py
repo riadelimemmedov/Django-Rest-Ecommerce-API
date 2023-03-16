@@ -18,36 +18,47 @@ from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from django.utils.translation import gettext_lazy as _
 
 from abstract.constants import AppName
 
 #!Admin Site Configuration
-admin.site.site_header = _('Ecommerce Admin')#login page
-admin.site.site_title = _('Ecommerce Admin User')#html <title> tag 
-admin.site.index_title = _('Welcome My Ecommerce Project')#site administration
+admin.site.site_header = _("Ecommerce Admin")  # login page
+admin.site.site_title = _("Ecommerce Admin User")  # html <title> tag
+admin.site.index_title = _("Welcome My Ecommerce Project")  # site administration
 
 urlpatterns = []
 
 if not settings.APP_NAME or settings.APP_NAME not in [app.value for app in AppName]:
-    raise Exception(_('Please set app correct name same as abstract.constants.AppName'))
+    raise Exception(_("Please set app correct name same as abstract.constants.AppName"))
 
 
 if settings.APP_NAME == AppName.ADMIN.name:
     urlpatterns += [
-        path('jet/',include('jet.urls','jet')),
-        path("jet/dashboard/", include("jet.dashboard.urls","jet-dashboard")),
+        path("jet/", include("jet.urls", "jet")),
+        path("jet/dashboard/", include("jet.dashboard.urls", "jet-dashboard")),
         # path("ckeditor/", include("ckeditor_uploader.urls")),
     ]
-    
-    urlpatterns += i18n_patterns(
-        path('admin/',admin.site.urls)
-    )
+
+    urlpatterns += i18n_patterns(path("admin/", admin.site.urls))
 else:
-    #App Url
-    pass
+    urlpatterns += [
+        path(
+            "api/",
+            include(
+                f"api.{settings.APP_NAME.lower()}.urls",
+                f"{settings.APP_NAME.lower()}_api",
+            ),
+        )
+    ]
+
+    handler400 = "config.handlers.handler400"
+    handler403 = "config.handlers.handler403"
+    handler404 = "config.handlers.handler404"
+    handler500 = "config.handlers.handler500"
+
 
 #!Settings Debug
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
