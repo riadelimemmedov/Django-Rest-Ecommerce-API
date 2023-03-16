@@ -12,7 +12,7 @@ SITE_NAME = ""  # Domain Name
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 #!App Name
-APP_NAME = "ADMIN"  # Default Admin
+APP_NAME = "PRODUCT"  # Default ADMIN,PRODUCT
 
 #!SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
@@ -172,4 +172,6 @@ JET_THEMES = [
 ]
 
 #!Rest Framework
-REST_FRAMEWORK = {}
+REST_FRAMEWORK = {
+    # "TEST_REQUEST_DEFAULT_FORMAT": "json",
+}
