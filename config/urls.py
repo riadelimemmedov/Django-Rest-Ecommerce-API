@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+#!Django Modules
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
@@ -21,9 +22,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.utils.translation import gettext_lazy as _
 
+
+#!Abstract
 from abstract.constants import AppName
 
-#!Admin Site Configuration
+
+#!Thirty Part Packages
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerSplitView
+
+
+# *Admin Site Configuration
 admin.site.site_header = _("Ecommerce Admin")  # login page
 admin.site.site_title = _("Ecommerce Admin User")  # html <title> tag
 admin.site.index_title = _("Welcome My Ecommerce Project")  # site administration
@@ -50,7 +58,12 @@ else:
                 f"api.{settings.APP_NAME.lower()}.urls",
                 f"{settings.APP_NAME.lower()}_api",
             ),
-        )
+        ),
+        path("api/schema", SpectacularAPIView.as_view(), name="schema_api"),
+        path(
+            "api/schema/docs",
+            SpectacularSwaggerSplitView.as_view(url_name="schema_api"),
+        ),
     ]
 
     handler400 = "config.handlers.handler400"
@@ -59,6 +72,6 @@ else:
     handler500 = "config.handlers.handler500"
 
 
-#!Settings Debug
+# *Settings Debug
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
