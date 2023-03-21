@@ -3,4 +3,6 @@ DRF Ecommerce API
     - python manage.py spectacular --file schema.yml
     - coverage run -m pytest
     - coverage html
+    - pytest
     - pytest --cov
+    - pytest -s
