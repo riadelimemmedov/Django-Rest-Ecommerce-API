@@ -43,10 +43,7 @@ DEFAULT_APPS = [
 ]
 
 #!Third Part App
-THIRD_PARTY_APPS = [
-    "django_cleanup",
-    "rest_framework",
-]
+THIRD_PARTY_APPS = ["django_cleanup", "rest_framework", "drf_spectacular"]
 
 #!Created Apps
 CREATED_APPS = [
@@ -174,4 +171,15 @@ JET_THEMES = [
 #!Rest Framework
 REST_FRAMEWORK = {
     # "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+
+#!SPECTACULAR_SETTINGS
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Django DRF Ecommerce",
+    "DESCRIPTION": "This project purpose creating ecommerce api for business company",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # OTHER SETTINGS
 }
