@@ -1,5 +1,6 @@
-# Test Model
+# Pytest
 import pytest
+
 
 # * If you don't declare pytestmark our test class model don't accsess to database table
 pytestmark = pytest.mark.django_db
@@ -30,12 +31,12 @@ class TestBrandModel:
 
 
 # #!TestProductModel
-# class TestProductModel:
-#     def test_str_method(self, product_factory):
-#         # Arrange
+class TestProductModel:
+    def test_str_method(self, product_factory):
+        # Arrange
 
-#         # Act
-#         obj = product_factory(name="test_product")
+        # Act
+        obj = product_factory(name="test_product")
 
-#         # Assert
-#         assert obj.__str__() == "test_product"
+        # Assert
+        assert obj.__str__() == "test_product"
