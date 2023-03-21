@@ -347,7 +347,7 @@ lib-cov
 lcov.info
 pids
 logs
-results
+results  
 node_modules
 .node_history
 
@@ -355,6 +355,9 @@ node_modules
 
 testApp
 coverage
+schema.yml
+htmlcov
+dsada.html
 
 # End of https://www.toptal.com/developers/gitignore/api/python,django,strapi
 
