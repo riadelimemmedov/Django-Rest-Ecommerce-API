@@ -31,3 +31,4 @@ class ProductFactory(factory.django.DjangoModelFactory):
     is_digital = True
     brand = factory.SubFactory(BrandFactory)
     category = factory.SubFactory(CategoryFactory)
+    is_active = True
