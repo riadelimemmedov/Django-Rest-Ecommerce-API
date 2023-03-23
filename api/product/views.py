@@ -1,8 +1,9 @@
 #!Django
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 #!Django Rest
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets
 
@@ -57,4 +58,19 @@ class ProductViewSet(viewsets.ViewSet):
     @extend_schema(responses=ProductSerializer)
     def list(self, request):
         serializer = ProductSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(
+        methods=["GET"],
+        detail=False,
+        url_path=r"category/(?P<category>\w+)/all",
+        url_name="all",
+    )
+    def list_product_by_category(self, request, category=None):
+        """
+        An endpoint to return products by category
+        """
+        serializer = ProductSerializer(
+            self.queryset.filter(category__name__icontains=category), many=True
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
