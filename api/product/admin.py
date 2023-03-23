@@ -20,3 +20,9 @@ class BrandAdmin(admin.ModelAdmin):
 @admin.register(m.Product)
 class ProductAdmin(admin.ModelAdmin):
     model = m.Product
+
+
+#!ProductLineAdmin
+@admin.register(m.ProductLine)
+class ProductLineAdmin(admin.ModelAdmin):
+    model = m.ProductLine
