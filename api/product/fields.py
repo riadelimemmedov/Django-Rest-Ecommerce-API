@@ -27,47 +27,20 @@ class OrderField(models.PositiveIntegerField):
         return []
 
     def pre_save(self, instance, add):
-        print("Instance is ", instance)
         if getattr(instance, self.attname) is None:
-            print("Instance is ", instance)
-            print("Attribute Value ", self.attname)
-            print("Model Instance Is ", getattr(instance, self.unique_for_field))
             qs = self.model.objects.all()
-            print("Model is ", self.model)
             try:
                 query = {
                     self.unique_for_field: getattr(instance, self.unique_for_field)
                 }
-                print("Query value is ", query)
-                print("Qs value is ", qs)
                 new_qs = qs.filter(**query)  # return productline associated product
-                print("New Qs value is ", new_qs)
                 last_item = new_qs.latest(self.attname)
                 value = last_item.order + 1
             except ObjectDoesNotExist:
                 value = 1
             return value
         else:
-            print("Add value is ", add)
             query = {self.unique_for_field: getattr(instance, self.unique_for_field)}
             qs = self.model.objects.all()
             new_qs = qs.filter(**query)
-            print("Query value is dam dam", query)
-            print("New query value is ", new_qs)
             return super().pre_save(instance, add)
-
-    # ?Debugging Area
-    # def pre_save(self, instance, created):
-    #     if getattr(instance, self.attname) is None:
-    #         print("Hello")
-    #         print("Attribute value ", self.attname)
-    #         print("Instance Is ", instance)
-    #         print("Model is ", self.model)
-    #         print("Uniqie field ", self.unique_for_field)
-    #         print("What is this ", getattr(instance, self.unique_for_field))
-    #         a = 12
-    #         return a
-    #     print("instanc is ", instance)
-    #     print("what happen here")
-
-    #     return super().pre_save(instance, created)
