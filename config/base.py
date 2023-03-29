@@ -43,7 +43,7 @@ DEFAULT_APPS = [
 ]
 
 #!Third Part App
-THIRD_PARTY_APPS = ["django_cleanup", "rest_framework", "drf_spectacular"]
+THIRD_PARTY_APPS = ["django_cleanup", "rest_framework", "drf_spectacular", "djmoney"]
 
 #!Created Apps
 CREATED_APPS = [
