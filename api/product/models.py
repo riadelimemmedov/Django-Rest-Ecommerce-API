@@ -2,22 +2,39 @@
 
 # Django Function
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from .fields import *
 
 # Thirty Part Packages
 from mptt.models import MPTTModel, TreeForeignKey
+from djmoney.models.fields import MoneyField
 
 
 # Custom Helpers Methods
-from config.helpers import random_code
+from config.helpers import random_code, returnFlugFormat
 
 # Create your models here.
 
+
+# *ActiveQueryset
+class ActiveQueryset(models.QuerySet):
+    # def get_queryset(self):#if using get_queryset override default django objects models and create some collision when write orm query
+    #     return super().get_queryset().filter(is_active=True)
+
+    def get_is_active(self):
+        return self.filter(is_active=True)
+
+
+####################################################################################################################################################################
 
 #!Category
 class Category(MPTTModel):
     name = models.CharField(_("category name"), max_length=100, unique=True)
     parent = TreeForeignKey("self", on_delete=models.PROTECT, null=True, blank=True)
+    is_active = models.BooleanField(_("is active category"), default=False)
+
+    objects = ActiveQueryset.as_manager()
 
     def __str__(self):
         return f"{self.name}"
@@ -33,6 +50,9 @@ class Category(MPTTModel):
 #!Brand
 class Brand(models.Model):
     name = models.CharField(_("brand name"), max_length=100, unique=True)
+    is_active = models.BooleanField(_("is active brand"), default=False)
+
+    objects = ActiveQueryset.as_manager()
 
     def __str__(self):
         return f"{self.name}"
@@ -53,19 +73,33 @@ class Product(models.Model):
     category = TreeForeignKey(
         "Category", on_delete=models.SET_NULL, null=True, blank=True
     )
+    pr_slug = models.SlugField(
+        _("product slug"), unique=True, db_index=True, blank=True
+    )
     is_active = models.BooleanField(_("is active product"), default=False)
 
-    def __str__(self):
-        return f"{self.name}"
+    # => if you want add new query methods to django objects model
+    objects = ActiveQueryset.as_manager()
+
+    # active_objects = ProductManager() #=> if you create seperate manager,
 
     class Meta:
         verbose_name = "Product"
         verbose_name_plural = "Products"
 
+    def __str__(self):
+        return f"{self.name}"
+
+    def save(self, *args, **kwargs):
+        self.pr_slug = returnFlugFormat(f"{self.name}")
+        super(Product, self).save(*args, **kwargs)
+
 
 #!ProductLine
 class ProductLine(models.Model):
-    price = models.DecimalField(_("price"), decimal_places=2, max_digits=5)
+    price = MoneyField(
+        _("price"), decimal_places=2, max_digits=10, default_currency="USD"
+    )
     sku = models.CharField(
         _("universal product code"),
         max_length=50,
@@ -76,17 +110,34 @@ class ProductLine(models.Model):
     )
     stock_qty = models.IntegerField(_("stock quantity"), default=0)
     product = models.ForeignKey(
-        Product, verbose_name="product", on_delete=models.CASCADE
+        Product,
+        related_name="products",
+        verbose_name="product",
+        on_delete=models.CASCADE,
     )
     is_active = models.BooleanField(_("is active productline"), default=False)
+    order = OrderField(unique_for_field="product", blank=True, null=True)
+    objects = ActiveQueryset.as_manager()
 
     class Meta:
         verbose_name = "ProductLine"
         verbose_name_plural = "ProductLines"
 
     def __str__(self):
-        return f"{self.product.name} - {self.price} - {self.sku}"
+        return str(self.order)
+        # return f"{self.product.name} - {self.price} - {self.sku}"
 
     def save(self, *args, **kwargs):
         self.sku = random_code()
         super(ProductLine, self).save(*args, **kwargs)
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=None)
+        print("Product object when model validate ", self.product)
+        print("Id value ", self.id)
+        print("Order value ", self.order)
+        qs = ProductLine.objects.filter(product=self.product)
+        print("Qs value in the model ", qs)
+        for obj in qs:
+            if self.id != obj.id and self.order == obj.order:
+                raise ValidationError("Duplicate order value or Object does not exists")
