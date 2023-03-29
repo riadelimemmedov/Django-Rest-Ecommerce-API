@@ -16,7 +16,9 @@ class TestCategoryEndpoints:
 
     def test_category_get(self, category_factory, api_client):
         # Arrange
-        category_factory.create_batch(4)
+        category_factory.create_batch(
+            4
+        )  # create four fake category row for test my category model
         # Act
         response = api_client().get(self.endpoint, format="json")
         # Assert
@@ -32,7 +34,9 @@ class TestBrandEndpoints:
 
     def test_brand_get(self, brand_factory, api_client):
         # Arrange
-        brand_factory.create_batch(4)
+        brand_factory.create_batch(
+            4
+        )  # create four fake brand row for test my brand model
         # Act
         response = api_client().get(self.endpoint, format="json")
         # Assert
@@ -48,7 +52,9 @@ class TestProductEndpoints:
 
     def test_product_get(self, product_factory, api_client):
         # Arrange
-        product_factory.create_batch(4)
+        product_factory.create_batch(
+            4
+        )  # create four fake product row for test my product model
         # Act
         response = api_client().get(self.endpoint, format="json")
         # Assert
