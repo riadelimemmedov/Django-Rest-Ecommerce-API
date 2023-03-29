@@ -1,25 +1,31 @@
 #!Django
 from django.shortcuts import render, get_object_or_404
+from django.db import connection
 
-#!Django Rest
+# Django Rest
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets
 
 
-#!Serializers and Models
+# Serializers and Models
 from .models import *
 from .serializers import *
+from .fields import *
 
 
-#!Third Party
+# Third Party
 from drf_spectacular.utils import extend_schema
+from pygments import highlight
+from pygments.formatters import TerminalFormatter
+from pygments.lexers import PostgresConsoleLexer
+from sqlparse import format
 
 # Create your views here.
 
 
-# *CategoryView
+#!CategoryView
 class CategoryViewSet(viewsets.ViewSet):
     """
     A Viewset for viewing all category
@@ -53,12 +59,44 @@ class ProductViewSet(viewsets.ViewSet):
     A Viewset for viewing all product
     """
 
-    queryset = Product.objects.all()
+    queryset = Product.objects.get_is_active()
+    lookup_field = "slug"
 
     @extend_schema(responses=ProductSerializer)
     def list(self, request):
         serializer = ProductSerializer(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        responses=ProductSerializer
+    )  # apple-2022-macbook-pro-laptop-with-m2-chip
+    def retrieve(self, request, slug=None):
+        serializer = ProductSerializer(
+            self.queryset.filter(pr_slug=slug).select_related("category", "brand"),
+            many=True,
+        )
+        response = Response(serializer.data, status=status.HTTP_200_OK)
+
+        # ?Highlet selected query
+        # retrieve_product = self.queryset.filter(pr_slug=slug)
+        # sqlformatted = format(str(retrieve_product.query), reindent=True)
+        # print(
+        #     "Result",
+        #     highlight(sqlformatted, PostgresConsoleLexer(), TerminalFormatter()),
+        # )
+
+        # ?Highliht all queries,when running sql start to render query
+        query_list = list(connection.queries)
+
+        print("Len of the connetion queries ", len(query_list))
+        for q in query_list:
+            sqlformatted = format(str(q["sql"]), reindent=True)
+            print(
+                "Result ",
+                highlight(sqlformatted, PostgresConsoleLexer(), TerminalFormatter()),
+            )
+
+        return response
 
     @action(
         methods=["GET"],
@@ -70,6 +108,10 @@ class ProductViewSet(viewsets.ViewSet):
         """
         An endpoint to return products by category
         """
+
+        parent_category = Category.objects.filter(parent__name="Clothes")
+        print("Parent Category Is ", parent_category)
+
         serializer = ProductSerializer(
             self.queryset.filter(category__name__icontains=category), many=True
         )
