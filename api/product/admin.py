@@ -4,6 +4,14 @@ from . import models as m
 # Register your models here.
 
 
+# *ProductLineInline
+class ProductLineInline(admin.TabularInline):
+    model = m.ProductLine
+    extra = 1
+
+
+#################################################################################################
+
 #!CategoryAdmin
 @admin.register(m.Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -19,10 +27,9 @@ class BrandAdmin(admin.ModelAdmin):
 #!ProductAdmin
 @admin.register(m.Product)
 class ProductAdmin(admin.ModelAdmin):
-    model = m.Product
+    inlines = [ProductLineInline]
+    list_display = ["name", "is_digital", "is_active"]
 
 
-#!ProductLineAdmin
-@admin.register(m.ProductLine)
-class ProductLineAdmin(admin.ModelAdmin):
-    model = m.ProductLine
+# ?Default Register Model
+admin.site.register(m.ProductLine)
