@@ -358,6 +358,7 @@ coverage
 schema.yml
 htmlcov
 dsada.html
+a.py
 
 # End of https://www.toptal.com/developers/gitignore/api/python,django,strapi
 
