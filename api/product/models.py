@@ -133,11 +133,7 @@ class ProductLine(models.Model):
 
     def clean_fields(self, exclude=None):
         super().clean_fields(exclude=None)
-        print("Product object when model validate ", self.product)
-        print("Id value ", self.id)
-        print("Order value ", self.order)
         qs = ProductLine.objects.filter(product=self.product)
-        print("Qs value in the model ", qs)
         for obj in qs:
             if self.id != obj.id and self.order == obj.order:
                 raise ValidationError("Duplicate order value or Object does not exists")
