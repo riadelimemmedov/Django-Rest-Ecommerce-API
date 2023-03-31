@@ -2,7 +2,7 @@
 import factory
 
 # Models
-from api.product.models import Category, Brand, Product
+from api.product.models import Category, Brand, Product, ProductLine
 
 
 #!CategoryFactory
@@ -31,4 +31,16 @@ class ProductFactory(factory.django.DjangoModelFactory):
     is_digital = True
     brand = factory.SubFactory(BrandFactory)
     category = factory.SubFactory(CategoryFactory)
+    is_active = True
+
+
+#!ProductLineFactory
+class ProductLineFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductLine
+
+    price = "10.00"
+    sku = "B700DD1FA82"
+    stock_qty = 2
+    product = factory.SubFactory(ProductFactory)
     is_active = True
