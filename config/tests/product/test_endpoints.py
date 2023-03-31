@@ -50,7 +50,7 @@ class TestBrandEndpoints:
 class TestProductEndpoints:
     endpoint = "/api/product/"
 
-    def test_product_get(self, product_factory, api_client):
+    def test_return_all_products(self, product_factory, api_client):
         # Arrange
         product_factory.create_batch(
             4
@@ -62,3 +62,19 @@ class TestProductEndpoints:
 
         assert response.status_code == 200
         assert len(json.loads(response.content)) == 4
+
+    def test_return_single_product_by_slug(self, product_factory, api_client):
+        obj = product_factory(pr_slug="nike-air-max-90")
+        response = api_client().get(f"{self.endpoint}{obj.pr_slug}/", format="json")
+        assert response.status_code == 200
+        assert len(json.loads(response.content)) == 1
+
+    def test_return_products_by_category_slug(
+        self, category_factory, product_factory, api_client
+    ):
+        obj = category_factory(ctg_slug="shoes")
+        product_factory(category=obj)
+        response = api_client().get(
+            f"{self.endpoint}category/shoes/all/", format="json"
+        )
+        assert response.status_code == 200
