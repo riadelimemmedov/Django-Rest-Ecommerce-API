@@ -1,3 +1,6 @@
+# Django modules and function
+from django.core.exceptions import ValidationError
+
 # Pytest
 import pytest
 
@@ -40,3 +43,22 @@ class TestProductModel:
 
         # Assert
         assert obj.__str__() == "test_product"
+
+
+#! TestProductLineModel
+class TestProductLineModel:
+    def test_str_method(self, product_line_factory):
+        # Arrange
+
+        # Act
+        obj = product_line_factory(sku="10.00")
+
+        # Assert
+        assert obj.__str__() == "$10.00"
+
+    def test_dublicate_order_value(self, product_line_factory, product_factory):
+        obj = product_factory()
+        product_line_factory(order=1, product=obj)
+        with pytest.raises(ValidationError):
+            # if create a new object same product value,work pytest.raises(ValidationError) and test pass succsesfully
+            product_line_factory(order=1, product=obj).clean()
