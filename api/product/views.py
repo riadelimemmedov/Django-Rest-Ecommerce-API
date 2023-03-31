@@ -67,9 +67,9 @@ class ProductViewSet(viewsets.ViewSet):
         serializer = ProductSerializer(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @extend_schema(
-        responses=ProductSerializer
-    )  # apple-2022-macbook-pro-laptop-with-m2-chip
+    @extend_schema(responses=ProductSerializer)
+    # apple-2022-macbook-pro-laptop-with-m2-chip
+    # nike-air-max-90
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
             self.queryset.filter(pr_slug=slug).select_related("category", "brand"),
@@ -88,7 +88,6 @@ class ProductViewSet(viewsets.ViewSet):
         # ?Highliht all queries,when running sql start to render query
         query_list = list(connection.queries)
 
-        print("Len of the connetion queries ", len(query_list))
         for q in query_list:
             sqlformatted = format(str(q["sql"]), reindent=True)
             print(
@@ -98,21 +97,20 @@ class ProductViewSet(viewsets.ViewSet):
 
         return response
 
+    @extend_schema(responses=ProductSerializer)
     @action(
         methods=["GET"],
         detail=False,
-        url_path=r"category/(?P<category>\w+)/all",
+        url_path=r"category/(?P<ctg_slug>\w+)/all",
         url_name="all",
     )
-    def list_product_by_category(self, request, category=None):
+    def list_product_by_category_slug(self, request, ctg_slug=None):
         """
         An endpoint to return products by category
         """
-
-        parent_category = Category.objects.filter(parent__name="Clothes")
-        print("Parent Category Is ", parent_category)
+        print("Category Slug Value ", ctg_slug)
 
         serializer = ProductSerializer(
-            self.queryset.filter(category__name__icontains=category), many=True
+            self.queryset.filter(category__ctg_slug__icontains=ctg_slug), many=True
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
