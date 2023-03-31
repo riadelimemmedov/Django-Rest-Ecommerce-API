@@ -33,11 +33,18 @@ class Category(MPTTModel):
     name = models.CharField(_("category name"), max_length=100, unique=True)
     parent = TreeForeignKey("self", on_delete=models.PROTECT, null=True, blank=True)
     is_active = models.BooleanField(_("is active category"), default=False)
+    ctg_slug = models.SlugField(
+        _("category slug"), unique=True, db_index=True, blank=True
+    )
 
     objects = ActiveQueryset.as_manager()
 
     def __str__(self):
         return f"{self.name}"
+
+    def save(self, *args, **kwargs):
+        self.ctg_slug = returnFlugFormat(f"{self.name}")
+        super(Category, self).save(*args, **kwargs)
 
     class MPTTMeta:
         order_insertion_by = ["name"]
@@ -124,15 +131,15 @@ class ProductLine(models.Model):
         verbose_name_plural = "ProductLines"
 
     def __str__(self):
-        return str(self.order)
+        return str(self.price)
         # return f"{self.product.name} - {self.price} - {self.sku}"
 
     def save(self, *args, **kwargs):
+        self.full_clean()
         self.sku = random_code()
         super(ProductLine, self).save(*args, **kwargs)
 
-    def clean_fields(self, exclude=None):
-        super().clean_fields(exclude=None)
+    def clean(self, exclude=None):
         qs = ProductLine.objects.filter(product=self.product)
         for obj in qs:
             if self.id != obj.id and self.order == obj.order:
