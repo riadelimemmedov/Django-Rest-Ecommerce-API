@@ -22,13 +22,20 @@ class BrandSerializer(serializers.ModelSerializer):
         exclude = ["id"]
 
 
+#!ProductImageSerializer
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        exclude = ["id"]
+
+
 #!ProductLineSerializer
 class ProductLineSerializer(serializers.ModelSerializer):
-    # product = ProductSerializer()
+    product_image = ProductImageSerializer(many=True)
 
     class Meta:
         model = ProductLine
-        exclude = ["id"]
+        fields = ["price", "sku", "stock_qty", "order", "product_image"]
 
 
 #!ProductSerializer
