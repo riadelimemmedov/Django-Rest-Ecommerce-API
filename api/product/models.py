@@ -144,3 +144,42 @@ class ProductLine(models.Model):
         for obj in qs:
             if self.id != obj.id and self.order == obj.order:
                 raise ValidationError("Duplicate order value or Object does not exists")
+
+
+#!ProductImage
+class ProductImage(models.Model):
+    name = models.CharField(_("product image name"), max_length=100)
+    alternative_text = models.CharField(_("alternative text"), max_length=100)
+    product_image_url = models.ImageField(
+        _("product image url"), upload_to="image/", default="test.png"
+    )
+    productline = models.ForeignKey(
+        ProductLine,
+        verbose_name="product line",
+        on_delete=models.CASCADE,
+        related_name="product_image",
+    )
+    order = OrderField(
+        unique_for_field="productline",
+        verbose_name="productline image order",
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = "Product Image"
+        verbose_name_plural = "Product Images"
+
+    def __str__(self):
+        return str(self.name)
+
+    def clean(self, exclude=None):
+        qs = ProductImage.objects.filter(productline=self.productline)
+        for obj in qs:
+            if self.id != obj.id and self.order == obj.order:
+                raise ValidationError("Duplicate order value or Object does not exists")
+
+    def save(self, *args, **kwargs):
+        try:
+            super(ProductImage, self).save(*args, **kwargs)
+        except Exception as e:
+            self.full_cean()
