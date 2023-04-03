@@ -101,16 +101,16 @@ class ProductViewSet(viewsets.ViewSet):
     @action(
         methods=["GET"],
         detail=False,
-        url_path=r"category/(?P<ctg_slug>\w+)/all",
+        url_path=r"category/(?P<categoryslug>[\w-]+)/all",
         url_name="all",
     )
-    def list_product_by_category_slug(self, request, ctg_slug=None):
+    def list_product_by_category_slug(self, request, categoryslug=None):
         """
         An endpoint to return products by category
         """
-        print("Category Slug Value ", ctg_slug)
+        print("Category Slug Value ", categoryslug)
 
         serializer = ProductSerializer(
-            self.queryset.filter(category__ctg_slug__icontains=ctg_slug), many=True
+            self.queryset.filter(category__ctg_slug__icontains=categoryslug), many=True
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
