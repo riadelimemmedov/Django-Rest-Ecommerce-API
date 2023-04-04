@@ -170,7 +170,7 @@ class ProductImage(models.Model):
         verbose_name_plural = "Product Images"
 
     def __str__(self):
-        return str(self.name)
+        return str(self.order)
 
     def clean(self, exclude=None):
         qs = ProductImage.objects.filter(productline=self.productline)
