@@ -1,5 +1,6 @@
 #!Django
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Prefetch
 from django.db import connection
 
 # Django Rest
@@ -72,7 +73,10 @@ class ProductViewSet(viewsets.ViewSet):
     # nike-air-max-90
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
-            self.queryset.filter(pr_slug=slug).select_related("category", "brand"),
+            Product.objects.filter(pr_slug=slug)
+            .select_related("category", "brand")
+            .prefetch_related(Prefetch("products"))
+            .prefetch_related(Prefetch("products__product_image")),
             many=True,
         )
         response = Response(serializer.data, status=status.HTTP_200_OK)
