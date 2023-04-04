@@ -62,3 +62,15 @@ class TestProductLineModel:
         with pytest.raises(ValidationError):
             # if create a new object same product value,work pytest.raises(ValidationError) and test pass succsesfully
             product_line_factory(order=1, product=obj).clean()
+
+
+#!TestProductImageModel
+class TestProductImageModel:
+    def test_str_method(self, product_image_factory):
+        # Arrange
+
+        # Act
+        obj = product_image_factory(order=1)
+
+        # Assert
+        assert obj.__str__() == "1"
