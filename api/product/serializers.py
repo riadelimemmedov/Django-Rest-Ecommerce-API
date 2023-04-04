@@ -26,7 +26,7 @@ class BrandSerializer(serializers.ModelSerializer):
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        exclude = ["id"]
+        exclude = ["id", "productline"]
 
 
 #!ProductLineSerializer
