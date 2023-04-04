@@ -8,7 +8,13 @@ from pytest_factoryboy import register
 
 
 # Factories
-from .factories import CategoryFactory, BrandFactory, ProductFactory, ProductLineFactory
+from .factories import (
+    CategoryFactory,
+    BrandFactory,
+    ProductFactory,
+    ProductLineFactory,
+    ProductImageFactory,
+)
 
 
 # *Register TestModelFactory
@@ -17,6 +23,7 @@ register(CategoryFactory)
 register(BrandFactory)
 register(ProductFactory)
 register(ProductLineFactory)
+register(ProductImageFactory)
 
 
 #!api_client
