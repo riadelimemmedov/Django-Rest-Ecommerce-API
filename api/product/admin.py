@@ -68,3 +68,8 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(m.ProductLine)
 class ProductLineAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]
+
+
+admin.site.register(m.Attribute)
+admin.site.register(m.AttributeValue)
+admin.site.register(m.ProductLineAttributeValue)
