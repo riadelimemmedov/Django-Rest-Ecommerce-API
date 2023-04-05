@@ -102,6 +102,37 @@ class Product(models.Model):
         super(Product, self).save(*args, **kwargs)
 
 
+#!Attribute
+class Attribute(models.Model):
+    name = models.CharField(_("attribute name"), max_length=100)
+    description = models.TextField(_("attribute description"), blank=True)
+
+    class Meta:
+        verbose_name = "Attribute"
+        verbose_name_plural = "Attributes"
+
+    def __str__(self):
+        return str(self.name)
+
+
+#!AttributeValue
+class AttributeValue(models.Model):
+    attr_value = models.CharField(_("attr value"), max_length=100)
+    attribute = models.ForeignKey(
+        Attribute,
+        verbose_name="attribute",
+        on_delete=models.CASCADE,
+        related_name="attribute_value",
+    )
+
+    class Meta:
+        verbose_name = "AttributeValue"
+        verbose_name_plural = "AttributeValues"
+
+    def __str__(self):
+        return f"{self.attr_value} --- {self.attribute.name}"
+
+
 #!ProductLine
 class ProductLine(models.Model):
     price = MoneyField(
@@ -124,6 +155,13 @@ class ProductLine(models.Model):
     )
     is_active = models.BooleanField(_("is active productline"), default=False)
     order = OrderField(unique_for_field="product", blank=True, null=True)
+    attribute_value = models.ManyToManyField(
+        AttributeValue,
+        through="ProductLineAttributeValue",
+        null=True,
+    )
+
+    # Queryser Custom
     objects = ActiveQueryset.as_manager()
 
     class Meta:
@@ -144,6 +182,28 @@ class ProductLine(models.Model):
         for obj in qs:
             if self.id != obj.id and self.order == obj.order:
                 raise ValidationError("Duplicate order value or Object does not exists")
+
+
+#!ProductLineAttributeValue
+
+
+class ProductLineAttributeValue(models.Model):
+    attr_value = models.ForeignKey(
+        AttributeValue,
+        verbose_name="product line attribute value",
+        on_delete=models.CASCADE,
+        related_name="product_attr_value_av",
+    )
+
+    product_line = models.ForeignKey(
+        ProductLine,
+        verbose_name="product line",
+        on_delete=models.CASCADE,
+        related_name="product_attr_value_pl",
+    )
+
+    class Meta:
+        unique_together = ["attr_value", "product_line"]
 
 
 #!ProductImage
