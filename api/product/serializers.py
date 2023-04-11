@@ -22,24 +22,6 @@ class BrandSerializer(serializers.ModelSerializer):
         exclude = ["id"]
 
 
-#!AttributeSerializer
-class AttributeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Attribute
-        fields = ["name"]
-
-
-#!AttributeValueSerializer
-class AttributeValueSerializer(serializers.ModelSerializer):
-    # attribute = serializers.CharField(source="attribute.name", read_only=True)
-    # ?or
-    attribute = AttributeSerializer(many=False)
-
-    class Meta:
-        model = AttributeValue
-        fields = ["attribute", "attr_value"]
-
-
 #!ProductImageSerializer
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,18 +32,10 @@ class ProductImageSerializer(serializers.ModelSerializer):
 #!ProductLineSerializer
 class ProductLineSerializer(serializers.ModelSerializer):
     product_image = ProductImageSerializer(many=True)
-    attribute_value = AttributeValueSerializer(many=True)
 
     class Meta:
         model = ProductLine
-        fields = [
-            "price",
-            "sku",
-            "stock_qty",
-            "order",
-            "product_image",
-            "attribute_value",
-        ]
+        fields = ["price", "sku", "stock_qty", "order", "product_image"]
 
 
 #!ProductSerializer
