@@ -43,6 +43,12 @@ class ProductImageInline(admin.TabularInline):
     extra = 1
 
 
+# *AttributeValueInline
+class AttributeValueInline(admin.TabularInline):
+    model = m.AttributeValue.product_line_attribute_value.through
+    extra = 1
+
+
 #################################################################################################
 
 #!CategoryAdmin
@@ -67,7 +73,7 @@ class ProductAdmin(admin.ModelAdmin):
 #!ProductLineAdmin
 @admin.register(m.ProductLine)
 class ProductLineAdmin(admin.ModelAdmin):
-    inlines = [ProductImageInline]
+    inlines = [ProductImageInline, AttributeValueInline]
 
 
 admin.site.register(m.Attribute)
