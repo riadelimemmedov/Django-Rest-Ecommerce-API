@@ -71,7 +71,6 @@ class ProductViewSet(viewsets.ViewSet):
     @extend_schema(responses=ProductSerializer)
     # apple-2022-macbook-pro-laptop-with-m2-chip
     # nike-air-max-90
-    # macbook-2022-edition
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
             Product.objects.filter(pr_slug=slug)
