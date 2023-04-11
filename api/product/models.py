@@ -158,7 +158,7 @@ class ProductLine(models.Model):
     attribute_value = models.ManyToManyField(
         AttributeValue,
         through="ProductLineAttributeValue",
-        related_name="product_line_attribute_value",
+        null=True,
     )
 
     # Queryser Custom
