@@ -157,7 +157,14 @@ class ProductLine(models.Model):
     order = OrderField(unique_for_field="product", blank=True, null=True)
     attribute_value = models.ManyToManyField(
         AttributeValue,
+        verbose_name="attribute value product line",
         through="ProductLineAttributeValue",
+        null=True,
+    )
+    product_type = models.ForeignKey(
+        "ProductType",
+        verbose_name="product type product line",
+        on_delete=models.PROTECT,
         null=True,
     )
 
@@ -243,3 +250,39 @@ class ProductImage(models.Model):
             super(ProductImage, self).save(*args, **kwargs)
         except Exception as e:
             self.full_cean()
+
+
+#!ProductType
+class ProductType(models.Model):
+    name = models.CharField(_("product type name"), max_length=100)
+
+    class Meta:
+        verbose_name = "Product Type"
+        verbose_name_plural = "Product Types"
+
+    def __str__(self):
+        return str(self.name)
+
+
+#!ProductTypeAttribute
+class ProductTypeAttribute(models.Model):
+    product_type = models.ForeignKey(
+        ProductType,
+        verbose_name="product type",
+        on_delete=models.CASCADE,
+        related_name="product_type_attribute_pt",
+    )
+    attribute = models.ForeignKey(
+        Attribute,
+        verbose_name="product type attribute",
+        on_delete=models.CASCADE,
+        related_name="product_type_attribute_a",
+    )
+
+    class Meta:
+        verbose_name = "Product Type Attribute"
+        verbose_name_plural = "Product Type Attributes"
+        unique_together = ("product_type", "attribute")
+
+    def __str__(self):
+        return f"{self.product_type.name}---{self.attribute.name}"
