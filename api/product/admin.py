@@ -73,3 +73,7 @@ class ProductLineAdmin(admin.ModelAdmin):
 admin.site.register(m.Attribute)
 admin.site.register(m.AttributeValue)
 admin.site.register(m.ProductLineAttributeValue)
+
+
+admin.site.register(m.ProductType)
+admin.site.register(m.ProductTypeAttribute)
