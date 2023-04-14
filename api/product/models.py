@@ -255,6 +255,9 @@ class ProductImage(models.Model):
 #!ProductType
 class ProductType(models.Model):
     name = models.CharField(_("product type name"), max_length=100)
+    attribute = models.ManyToManyField(
+        Attribute, through="ProductTypeAttribute", related_name="product_type_attribute"
+    )
 
     class Meta:
         verbose_name = "Product Type"
