@@ -25,6 +25,7 @@ DATABASES = {
         "USER": config("POSTGRES_USER"),
         "PASSWORD": config("POSTGRES_PASSWORD"),
         "PORT": config("POSTGRES_PORT", 5432),
+        "DISABLE_SERVER_SIDE_CURSORS": True,
     }
 }
 
