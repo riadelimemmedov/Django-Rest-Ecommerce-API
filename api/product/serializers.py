@@ -29,13 +29,46 @@ class ProductImageSerializer(serializers.ModelSerializer):
         exclude = ["id", "productline"]
 
 
+#!AttributeSerializer
+class AttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attribute
+        fields = ["name", "id"]
+
+
+#!AttributeValueSerializer
+class AttributeValueSerializer(serializers.ModelSerializer):
+    attribute = AttributeSerializer(many=False)
+
+    class Meta:
+        model = AttributeValue
+        fields = ["attribute", "attr_value"]
+
+
 #!ProductLineSerializer
 class ProductLineSerializer(serializers.ModelSerializer):
     product_image = ProductImageSerializer(many=True)
+    attribute_value = AttributeValueSerializer(many=True)
 
     class Meta:
         model = ProductLine
-        fields = ["price", "sku", "stock_qty", "order", "product_image"]
+        fields = [
+            "price",
+            "sku",
+            "stock_qty",
+            "order",
+            "product_image",
+            "attribute_value",
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        av_data = data.pop("attribute_value")
+        attr_values = {}
+        for key in av_data:
+            attr_values.update({key["attribute"]["id"]: key["attr_value"]})
+        data.update({"specification": attr_values})
+        return data
 
 
 #!ProductSerializer
