@@ -159,6 +159,7 @@ class ProductLine(models.Model):
         AttributeValue,
         verbose_name="attribute value product line",
         through="ProductLineAttributeValue",
+        related_name="product_line_attribute_value",
         null=True,
     )
     product_type = models.ForeignKey(
