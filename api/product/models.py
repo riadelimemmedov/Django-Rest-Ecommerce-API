@@ -4,6 +4,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
 from .fields import *
 
 # Thirty Part Packages
@@ -212,6 +213,26 @@ class ProductLineAttributeValue(models.Model):
 
     class Meta:
         unique_together = ["attr_value", "product_line"]
+
+    def clean(self):
+        qs = ProductLineAttributeValue.objects.filter(
+            Q(attr_value=self.attr_value) | Q(product_line=self.product_line)
+        ).exists()
+
+        if not qs:
+            iqs = Attribute.objects.filter(
+                attribute_value__product_attr_value_av=self.product_line
+            ).values_list(
+                "pk", flat=True
+            )  # return value list instead of dictionary
+            print("Bunedi iqs ", iqs)
+
+            if self.attr_value.attribute.id not in iqs:
+                raise ValidationError("Duplicate attribute exists")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(ProductLineAttributeValue, self).save(*args, **kwargs)
 
 
 #!ProductImage
