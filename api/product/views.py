@@ -71,12 +71,14 @@ class ProductViewSet(viewsets.ViewSet):
     @extend_schema(responses=ProductSerializer)
     # apple-2022-macbook-pro-laptop-with-m2-chip
     # nike-air-max-90
+    # msi-25-speakers-anti-blueflicker-free
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
             Product.objects.filter(pr_slug=slug)
             .select_related("category", "brand")
             .prefetch_related(Prefetch("products"))
-            .prefetch_related(Prefetch("products__product_image")),
+            .prefetch_related(Prefetch("products__product_image"))
+            .prefetch_related(Prefetch("products__attribute_value__attribute")),
             many=True,
         )
         response = Response(serializer.data, status=status.HTTP_200_OK)
@@ -91,6 +93,7 @@ class ProductViewSet(viewsets.ViewSet):
 
         # ?Highliht all queries,when running sql start to render query
         query_list = list(connection.queries)
+        print("Length of query list ", len(query_list))
 
         for q in query_list:
             sqlformatted = format(str(q["sql"]), reindent=True)
