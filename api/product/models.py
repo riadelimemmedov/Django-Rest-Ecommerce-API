@@ -85,6 +85,12 @@ class Product(models.Model):
         _("product slug"), unique=True, db_index=True, blank=True
     )
     is_active = models.BooleanField(_("is active product"), default=False)
+    product_type = models.ForeignKey(
+        "ProductType",
+        verbose_name="product type",
+        on_delete=models.PROTECT,
+        null=True,
+    )
 
     # => if you want add new query methods to django objects model
     objects = ActiveQueryset.as_manager()
@@ -161,12 +167,6 @@ class ProductLine(models.Model):
         verbose_name="attribute value product line",
         through="ProductLineAttributeValue",
         related_name="product_line_attribute_value",
-        null=True,
-    )
-    product_type = models.ForeignKey(
-        "ProductType",
-        verbose_name="product type product line",
-        on_delete=models.PROTECT,
         null=True,
     )
 
