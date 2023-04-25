@@ -2,7 +2,17 @@
 import factory
 
 # Models
-from api.product.models import Category, Brand, Product, ProductLine, ProductImage
+from api.product.models import (
+    Category,
+    Brand,
+    Product,
+    ProductLine,
+    ProductImage,
+    ProductType,
+    Attribute,
+    AttributeValue,
+    ProductTypeAttribute,
+)
 
 
 #!CategoryFactory
@@ -21,6 +31,29 @@ class BrandFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: "Brand_%d" % n)
 
 
+#!AttributeFactory
+class AttributeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Attribute
+
+    name = "attribute_name_test"
+    description = "attr_description_test"
+
+
+#!ProductTypeFactory
+class ProductTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductType
+
+    name = "test_type"
+
+    @factory.post_generation
+    def attribute(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute.add(**extracted)
+
+
 #!ProductFactory
 class ProductFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -32,6 +65,16 @@ class ProductFactory(factory.django.DjangoModelFactory):
     brand = factory.SubFactory(BrandFactory)
     category = factory.SubFactory(CategoryFactory)
     is_active = True
+    product_type = factory.SubFactory(ProductTypeFactory)
+
+
+#!AttributeValueFactory
+class AttributeValueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AttributeValue
+
+    attr_value = "attr_test"
+    attribute = factory.SubFactory(AttributeFactory)
 
 
 #!ProductLineFactory
@@ -44,6 +87,13 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     stock_qty = 2
     product = factory.SubFactory(ProductFactory)
     is_active = True
+
+    @factory.post_generation
+    def attribute_value(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        print("Extracted Value ProductLine ", extracted)
+        self.attribute_value.add(*extracted)
 
 
 #!ProductImageFactory
