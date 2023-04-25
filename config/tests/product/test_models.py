@@ -47,11 +47,12 @@ class TestProductModel:
 
 #! TestProductLineModel
 class TestProductLineModel:
-    def test_str_method(self, product_line_factory):
+    def test_str_method(self, product_line_factory, attribute_value_factory):
         # Arrange
 
         # Act
-        obj = product_line_factory(sku="10.00")
+        attr = attribute_value_factory(attr_value="test")
+        obj = product_line_factory(sku="10.00", attribute_value=(attr,))
 
         # Assert
         assert obj.__str__() == "$10.00"
@@ -74,3 +75,26 @@ class TestProductImageModel:
 
         # Assert
         assert obj.__str__() == "1"
+
+
+#!TestProductTypeModel
+class TestProductTypeModel:
+    def test_str_method(self, product_type_factory, attribute_factory):
+        # test = attribute_factory(name="test")
+        obj = product_type_factory.create(name="test_type")
+        assert obj.__str__() == "test_type"
+
+
+#!TestAttributeModel
+class TestAttributeModel:
+    def test_str_method(self, attribute_factory):
+        obj = attribute_factory(name="test_attribute")
+        assert obj.__str__() == "test_attribute"
+
+
+#!TestAttributeValueModel
+class TestAttributeValueModel:
+    def test_str_method(self, attribute_value_factory, attribute_factory):
+        obj_a = attribute_factory(name="test_attribute")
+        obj_b = attribute_value_factory(attr_value="test_value", attribute=obj_a)
+        assert obj_b.__str__() == "test_value --- test_attribute"
