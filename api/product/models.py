@@ -31,11 +31,11 @@ class ActiveQueryset(models.QuerySet):
 
 #!Category
 class Category(MPTTModel):
-    name = models.CharField(_("category name"), max_length=100, unique=True)
+    name = models.CharField(_("category name"), max_length=235, unique=True)
     parent = TreeForeignKey("self", on_delete=models.PROTECT, null=True, blank=True)
     is_active = models.BooleanField(_("is active category"), default=False)
     ctg_slug = models.SlugField(
-        _("category slug"), unique=True, db_index=True, blank=True
+        _("category slug"), max_length=255, unique=True, db_index=True, blank=True
     )
 
     objects = ActiveQueryset.as_manager()
