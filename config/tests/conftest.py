@@ -10,8 +10,7 @@ from pytest_factoryboy import register
 # Factories
 from .factories import (
     CategoryFactory,
-    # BrandFactory,
-    # ProductFactory,
+    ProductFactory,
     # ProductLineFactory,
     # ProductImageFactory,
     # AttributeFactory,
@@ -23,8 +22,7 @@ from .factories import (
 # *Register TestModelFactory
 # if you want call this Factory in the test file you need to declare  bottom_line format = category_factory
 register(CategoryFactory)
-# register(BrandFactory)
-# register(ProductFactory)
+register(ProductFactory)
 # register(ProductLineFactory)
 # register(ProductImageFactory)
 # register(AttributeFactory)
