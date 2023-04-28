@@ -15,13 +15,6 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["name", "parent"]
 
 
-#!BrandSerializer
-class BrandSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Brand
-        exclude = ["id"]
-
-
 #!ProductImageSerializer
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -73,7 +66,7 @@ class ProductLineSerializer(serializers.ModelSerializer):
 
 #!ProductSerializer
 class ProductSerializer(serializers.ModelSerializer):
-    brand_name = serializers.CharField(source="brand.name")
+    # brand_name = serializers.CharField(source="brand.name") Because I am delete Brand Table from Databases
     category = CategorySerializer()
     products = ProductLineSerializer(many=True)
     attribute = serializers.SerializerMethodField()
@@ -83,7 +76,6 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             "name",
-            "brand_name",
             "is_active",
             "pr_slug",
             "description",
