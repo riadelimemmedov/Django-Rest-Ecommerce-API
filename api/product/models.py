@@ -10,6 +10,8 @@ from .fields import *
 # Thirty Part Packages
 from mptt.models import MPTTModel, TreeForeignKey
 from djmoney.models.fields import MoneyField
+from django_extensions.db.fields import RandomCharField
+from django_extensions.db.models import ActivatorModel, TimeStampedModel
 
 
 # Custom Helpers Methods
@@ -55,42 +57,30 @@ class Category(MPTTModel):
         verbose_name_plural = "Categorys"
 
 
-#!Brand
-class Brand(models.Model):
-    name = models.CharField(_("brand name"), max_length=100, unique=True)
-    is_active = models.BooleanField(_("is active brand"), default=False)
-
-    objects = ActiveQueryset.as_manager()
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        verbose_name = "Brand"
-        verbose_name_plural = "Brands"
-
-
 #!Product
-class Product(models.Model):
+class Product(TimeStampedModel):
     name = models.CharField(_("product name"), max_length=100)
     description = models.TextField(_("product description"), blank=True)
     is_digital = models.BooleanField(_("is digital product"), default=False)
-    brand = models.ForeignKey(
-        Brand, verbose_name=_("product brand"), on_delete=models.CASCADE
+    pid = RandomCharField(
+        _("product unique id"), length=10, unique=True, db_index=True, null=True
     )
+    # brand = models.ForeignKey(
+    #     Brand, verbose_name=_("product brand"), on_delete=models.CASCADE
+    # )
     category = TreeForeignKey(
-        "Category", on_delete=models.SET_NULL, null=True, blank=True
+        "Category", on_delete=models.PROTECT, null=True, blank=True
     )
     pr_slug = models.SlugField(
-        _("product slug"), unique=True, db_index=True, blank=True
+        _("product slug"), max_length=255, unique=True, db_index=True, blank=True
     )
     is_active = models.BooleanField(_("is active product"), default=False)
-    product_type = models.ForeignKey(
-        "ProductType",
-        verbose_name="product type",
-        on_delete=models.PROTECT,
-        null=True,
-    )
+    # product_type = models.ForeignKey(
+    #     "ProductType",
+    #     verbose_name="product type",
+    #     on_delete=models.PROTECT,
+    #     null=True,
+    # )
 
     # => if you want add new query methods to django objects model
     objects = ActiveQueryset.as_manager()
