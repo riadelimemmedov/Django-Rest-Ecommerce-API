@@ -4,7 +4,6 @@ import factory
 # Models
 from api.product.models import (
     Category,
-    Brand,
     Product,
     ProductLine,
     ProductImage,
@@ -24,14 +23,6 @@ class CategoryFactory(factory.django.DjangoModelFactory):
     ctg_slug = factory.Sequence(lambda n: "Category_Slug_%d" % n)
 
 
-# #!BrandFactory
-# class BrandFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = Brand
-
-#     name = factory.Sequence(lambda n: "Brand_%d" % n)
-
-
 # #!AttributeFactory
 # class AttributeFactory(factory.django.DjangoModelFactory):
 #     class Meta:
@@ -39,6 +30,19 @@ class CategoryFactory(factory.django.DjangoModelFactory):
 
 #     name = "attribute_name_test"
 #     description = "attr_description_test"
+
+
+# #!ProductFactory
+class ProductFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Product
+
+    name = factory.Sequence(lambda n: "Product_Name_%d" % n)
+    description = "test_product_description"
+    is_digital = True
+    pid = factory.Sequence(lambda n: "0000_%d" % n)
+    category = factory.SubFactory(CategoryFactory)
+    is_active = True
 
 
 # #!ProductTypeFactory
@@ -53,20 +57,6 @@ class CategoryFactory(factory.django.DjangoModelFactory):
 #         if not create or not extracted:
 #             return
 #         self.attribute.add(**extracted)
-
-
-# #!ProductFactory
-# class ProductFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = Product
-
-#     name = factory.Sequence(lambda n: "Product_%d" % n)
-#     description = "test_description"
-#     is_digital = True
-#     brand = factory.SubFactory(BrandFactory)
-#     category = factory.SubFactory(CategoryFactory)
-#     is_active = True
-#     product_type = factory.SubFactory(ProductTypeFactory)
 
 
 # #!AttributeValueFactory
