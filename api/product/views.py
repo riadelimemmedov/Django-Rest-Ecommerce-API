@@ -40,21 +40,7 @@ class CategoryViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-#!BrandViewSet
-class BrandViewSet(viewsets.ViewSet):
-    """
-    A Viewset for viewing all brand
-    """
-
-    queryset = Brand.objects.all()
-
-    @extend_schema(responses=BrandSerializer)
-    def list(self, request):
-        serializer = BrandSerializer(self.queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-#!BrandViewSet
+#!ProductViewSet
 class ProductViewSet(viewsets.ViewSet):
     """
     A Viewset for viewing all product
@@ -75,7 +61,7 @@ class ProductViewSet(viewsets.ViewSet):
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
             Product.objects.filter(pr_slug=slug)
-            .select_related("category", "brand")
+            # .select_related("category", "brand") //Because I am delete Brand delete table,If you want keep up this table for this project
             .prefetch_related(Prefetch("products"))
             .prefetch_related(Prefetch("products__product_image"))
             .prefetch_related(Prefetch("products__attribute_value__attribute")),
