@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 # Models and Serializers
-from api.product.models import Category
+from api.product.models import Category, Product
 
 
 # Pytest
@@ -70,28 +70,45 @@ class TestCategoryModel:
         assert qs == 2
 
 
-# #!TestBrandModel
-# class TestBrandModel:
-#     def test_str_method(self, brand_factory):
-#         # Arrange
+#!TestProductModel
+class TestProductModel:
+    def test_str_method(self, product_factory):
+        obj = product_factory(name="test_product")
+        assert obj.__str__() == "test_product"
 
-#         # Act
-#         obj = brand_factory(name="test_brand")
+    def test_name_prslug_pid_max_length(self, product_factory):
+        name = "x" * 100
+        pr_slug = "y" * 255
+        pid = "z" * 10
+        obj = product_factory(name=name, pr_slug=pr_slug, pid=pid)
+        if len(name) > 100 or len(pr_slug) > 255 or len(pid) > 10:
+            with pytest.raises(ValidationError) as e:
+                obj.full_clean()
+        else:
+            assert len(name) <= 100
+            assert len(pr_slug) <= 255
 
-#         # Assert
-#         assert obj.__str__() == "test_brand"
+    def test_is_digital_false_default(self, product_factory):
+        obj = product_factory(is_digital=False)
+        assert obj.is_digital is False
 
+    def test_fk_category_on_delete_protect(self, category_factory, product_factory):
+        obj = category_factory()
+        product_factory(category=obj)
+        with pytest.raises(IntegrityError):
+            obj.delete()
 
-# # #!TestProductModel
-# class TestProductModel:
-#     def test_str_method(self, product_factory):
-#         # Arrange
+    def test_return_product_active_only_true(self, product_factory):
+        product_factory(is_active=True)
+        product_factory(is_active=False)
+        qs = Product.objects.get_is_active().count()
+        assert qs == 1
 
-#         # Act
-#         obj = product_factory(name="test_product")
-
-#         # Assert
-#         assert obj.__str__() == "test_product"
+    def test_return_product_active_only_false(self, product_factory):
+        product_factory(is_active=True)
+        product_factory(is_active=False)
+        qs = Product.objects.all().count()
+        assert qs == 2
 
 
 # #! TestProductLineModel
