@@ -30,24 +30,6 @@ class TestCategoryEndpoints:
         assert len(json.loads(response.content)) == 4
 
 
-# #!TestBrandEndpoints
-# class TestBrandEndpoints:
-#     endpoint = "/api/brand/"
-
-#     def test_brand_get(self, brand_factory, api_client):
-#         # Arrange
-#         brand_factory.create_batch(
-#             4
-#         )  # create four fake brand row for test my brand model
-#         # Act
-#         response = api_client().get(self.endpoint, format="json")
-#         # Assert
-#         print("Brand content ", json.loads(response.content))
-
-#         assert response.status_code == 200
-#         assert len(json.loads(response.content)) == 4
-
-
 # #!TestProductEndpoints
 # class TestProductEndpoints:
 #     endpoint = "/api/product/"
