@@ -65,16 +65,16 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 #!BrandAdmin
-@admin.register(m.Brand)
-class BrandAdmin(admin.ModelAdmin):
-    model = m.Brand
+# @admin.register(m.Brand)
+# class BrandAdmin(admin.ModelAdmin):
+#     model = m.Brand
 
 
 #!ProductAdmin
 @admin.register(m.Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductLineInline]
-    list_display = ["name", "is_digital", "is_active"]
+    list_display = ["name", "is_digital", "is_active", "pid", "created", "modified"]
 
 
 #!ProductLineAdmin
