@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 # Models and Serializers
-from api.product.models import Category, Product
+from api.product.models import Category, Product, ProductLine
 
 
 # Pytest
@@ -112,23 +112,60 @@ class TestProductModel:
 
 
 # #! TestProductLineModel
-# class TestProductLineModel:
-#     def test_str_method(self, product_line_factory, attribute_value_factory):
-#         # Arrange
+class TestProductLineModel:
+    def test_str_method(self, product_line_factory):
+        # Arrange
 
-#         # Act
-#         attr = attribute_value_factory(attr_value="test")
-#         obj = product_line_factory(sku="10.00", attribute_value=(attr,))
+        # Act
+        # attr = attribute_value_factory(attr_value="test")
+        obj = product_line_factory(sku="10.00")
 
-#         # Assert
-#         assert obj.__str__() == "$10.00"
+        # Assert
+        assert obj.__str__() == "$10.00"
 
-#     def test_dublicate_order_value(self, product_line_factory, product_factory):
-#         obj = product_factory()
-#         product_line_factory(order=1, product=obj)
-#         with pytest.raises(ValidationError):
-#             # if create a new object same product value,work pytest.raises(ValidationError) and test pass succsesfully
-#             product_line_factory(order=1, product=obj).clean()
+    def test_dublicate_order_value(self, product_line_factory, product_factory):
+        obj = product_factory()
+        product_line_factory(order=1, product=obj)
+        with pytest.raises(ValidationError):
+            # if create a new object same product value,work pytest.raises(ValidationError) and test pass succsesfully
+            product_line_factory(order=1, product=obj).clean()
+
+    def test_field_decimal_places(self, product_line_factory):
+        price = 1.001
+        with pytest.raises(ValidationError):
+            product_line_factory(price=price)
+
+    def test_field_max_digits(self, product_line_factory):
+        price = 1000.002
+        with pytest.raises(ValidationError):
+            product_line_factory(price=price)
+
+    def test_field_sku_max_length(self, product_line_factory):
+        sku = "x" * 55
+        with pytest.raises(ValidationError):
+            product_line_factory(sku=sku)
+
+    def test_is_active_false_default(self, product_line_factory):
+        obj = product_line_factory(is_active=False)
+        assert obj.is_active is False
+
+    def test_fk_product_on_delete_protect(self, product_line_factory, product_factory):
+        obj = product_factory()
+        product_line_factory(product=obj)
+        with pytest.raises(IntegrityError):
+            obj.delete()
+
+    def test_return_product_line_active_only_true(self, product_line_factory):
+        product_line_factory(is_active=True)
+        product_line_factory(is_active=False)
+        qs = ProductLine.objects.get_is_active().count()
+        assert qs == 1
+
+    def test_return_product_line_active_only_false(self, product_line_factory):
+        product_line_factory(is_active=True)
+        product_line_factory(is_active=False)
+        qs = ProductLine.objects.count()
+        assert qs == 2
 
 
 # #!TestProductImageModel
