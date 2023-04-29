@@ -148,16 +148,20 @@ class ProductLine(models.Model):
         Product,
         related_name="products",
         verbose_name="product",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
     is_active = models.BooleanField(_("is active productline"), default=False)
     order = OrderField(unique_for_field="product", blank=True, null=True)
-    attribute_value = models.ManyToManyField(
-        AttributeValue,
-        verbose_name="attribute value product line",
-        through="ProductLineAttributeValue",
-        related_name="product_line_attribute_value",
-        null=True,
+    weight = models.FloatField(_("product weight"), default=0)
+    # attribute_value = models.ManyToManyField(
+    #     AttributeValue,
+    #     verbose_name="attribute value product line",
+    #     through="ProductLineAttributeValue",
+    #     related_name="product_line_attribute_value",
+    #     null=True,
+    # )
+    created_at = models.DateTimeField(
+        _("product created at"), auto_now_add=True, editable=False, null=True
     )
 
     # Queryser Custom
