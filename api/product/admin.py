@@ -44,9 +44,10 @@ class ProductImageInline(admin.TabularInline):
 
 
 # *AttributeValueInline
-class AttributeValueInline(admin.TabularInline):
-    model = m.AttributeValue.product_line_attribute_value.through
-    extra = 1
+# class AttributeValueInline(admin.TabularInline):
+#     # model = m.AttributeValue.product_line_attribute_value.through
+#     # model = m.AttributeValue
+#     extra = 1
 
 
 # *AttributeInline
@@ -78,9 +79,9 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 #!ProductLineAdmin
-@admin.register(m.ProductLine)
-class ProductLineAdmin(admin.ModelAdmin):
-    inlines = [ProductImageInline, AttributeValueInline]
+# @admin.register(m.ProductLine)
+# class ProductLineAdmin(admin.ModelAdmin):
+#     inlines = [ProductImageInline, AttributeValueInline]
 
 
 #!ProductTypeAdmin
