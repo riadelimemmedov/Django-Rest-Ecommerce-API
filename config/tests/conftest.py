@@ -11,7 +11,7 @@ from pytest_factoryboy import register
 from .factories import (
     CategoryFactory,
     ProductFactory,
-    # ProductLineFactory,
+    ProductLineFactory,
     # ProductImageFactory,
     # AttributeFactory,
     # AttributeValueFactory,
@@ -23,7 +23,7 @@ from .factories import (
 # if you want call this Factory in the test file you need to declare  bottom_line format = category_factory
 register(CategoryFactory)
 register(ProductFactory)
-# register(ProductLineFactory)
+register(ProductLineFactory)
 # register(ProductImageFactory)
 # register(AttributeFactory)
 # register(AttributeValueFactory)
