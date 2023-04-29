@@ -69,22 +69,23 @@ class ProductFactory(factory.django.DjangoModelFactory):
 
 
 # #!ProductLineFactory
-# class ProductLineFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = ProductLine
+class ProductLineFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductLine
 
-#     price = "10.00"
-#     sku = "B700DD1FA82"
-#     stock_qty = 2
-#     product = factory.SubFactory(ProductFactory)
-#     is_active = True
+    price = "10.00"
+    sku = "B700DD1FA82"
+    stock_qty = 2
+    product = factory.SubFactory(ProductFactory)
+    is_active = True
+    weight = 100
 
-#     @factory.post_generation
-#     def attribute_value(self, create, extracted, **kwargs):
-#         if not create or not extracted:
-#             return
-#         print("Extracted Value ProductLine ", extracted)
-#         self.attribute_value.add(*extracted)
+    # @factory.post_generation
+    # def attribute_value(self, create, extracted, **kwargs):
+    #     if not create or not extracted:
+    #         return
+    #     print("Extracted Value ProductLine ", extracted)
+    #     self.attribute_value.add(*extracted)
 
 
 # #!ProductImageFactory
