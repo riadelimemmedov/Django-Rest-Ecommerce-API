@@ -23,6 +23,14 @@ class CategoryFactory(factory.django.DjangoModelFactory):
     ctg_slug = factory.Sequence(lambda n: "Category_Slug_%d" % n)
 
 
+# #!ProductTypeFactory
+class ProductTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductType
+
+    name = factory.Sequence(lambda n: "Product_Type_%d" % n)
+
+
 # #!AttributeFactory
 # class AttributeFactory(factory.django.DjangoModelFactory):
 #     class Meta:
@@ -43,20 +51,13 @@ class ProductFactory(factory.django.DjangoModelFactory):
     pid = factory.Sequence(lambda n: "0000_%d" % n)
     category = factory.SubFactory(CategoryFactory)
     is_active = True
+    product_type = factory.SubFactory(ProductTypeFactory)
 
-
-# #!ProductTypeFactory
-# class ProductTypeFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = ProductType
-
-#     name = "test_type"
-
-#     @factory.post_generation
-#     def attribute(self, create, extracted, **kwargs):
-#         if not create or not extracted:
-#             return
-#         self.attribute.add(**extracted)
+    # @factory.post_generation
+    # def attribute(self, create, extracted, **kwargs):
+    #     if not create or not extracted:
+    #         return
+    #     self.attribute.add(**extracted)
 
 
 # #!AttributeValueFactory
@@ -79,6 +80,7 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     product = factory.SubFactory(ProductFactory)
     is_active = True
     weight = 100
+    product_type = factory.SubFactory(ProductTypeFactory)
 
     # @factory.post_generation
     # def attribute_value(self, create, extracted, **kwargs):
@@ -89,10 +91,10 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
 
 
 # #!ProductImageFactory
-# class ProductImageFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = ProductImage
+class ProductImageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductImage
 
-#     alternative_text = "test alternative text"
-#     product_image_url = "test.png"
-#     productline = factory.SubFactory(ProductLineFactory)
+    alternative_text = "test alternative text"
+    product_image_url = "test.png"
+    productline = factory.SubFactory(ProductLineFactory)
