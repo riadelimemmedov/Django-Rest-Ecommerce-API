@@ -1,6 +1,7 @@
 # Django modules and function
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.db import transaction
 
 # Models and Serializers
 from api.product.models import Category, Product, ProductLine
@@ -110,6 +111,14 @@ class TestProductModel:
         qs = Product.objects.all().count()
         assert qs == 2
 
+    def test_fk_product_type_on_delete_protect(
+        self, product_type_factory, product_factory
+    ):
+        obj = product_type_factory()
+        product_factory(product_type=obj)
+        with pytest.raises(IntegrityError):
+            obj.delete()
+
 
 # #! TestProductLineModel
 class TestProductLineModel:
@@ -167,25 +176,55 @@ class TestProductLineModel:
         qs = ProductLine.objects.count()
         assert qs == 2
 
+    def test_fk_product_type_on_delete_protect(
+        self, product_type_factory, product_line_factory
+    ):
+        obj = product_type_factory()
+        product_line_factory(product_type=obj)
+        with pytest.raises(IntegrityError) as e:
+            obj.delete()
+
 
 # #!TestProductImageModel
-# class TestProductImageModel:
-#     def test_str_method(self, product_image_factory):
-#         # Arrange
+class TestProductImageModel:
+    def test_str_method(self, product_image_factory, product_line_factory):
+        # Arrange
 
-#         # Act
-#         obj = product_image_factory(order=1)
+        # Act
+        productline = product_line_factory(sku="1D0605C019D")
+        obj = product_image_factory(order=1, productline=productline)
 
-#         # Assert
-#         assert obj.__str__() == "1"
+        # Assert
+        assert obj.__str__() == f"{productline.sku}_img"
+
+    @transaction.atomic()
+    def test_alternative_text_field_length(self, product_image_factory):
+        obj = product_image_factory(alternative_text="This is image")
+        with transaction.atomic():
+            with pytest.raises(ValidationError) as e:
+                obj.full_clean()
+
+    def test_duplicate_order_values(self, product_image_factory, product_line_factory):
+        productline = product_line_factory()
+        product_image_factory(order=1, productline=productline)
+        with pytest.raises(ValidationError):
+            product_image_factory(order=1, productline=productline).full_clean()
 
 
 # #!TestProductTypeModel
-# class TestProductTypeModel:
-#     def test_str_method(self, product_type_factory, attribute_factory):
-#         # test = attribute_factory(name="test")
-#         obj = product_type_factory.create(name="test_type")
-#         assert obj.__str__() == "test_type"
+class TestProductTypeModel:
+    def test_str_method(self, product_type_factory):
+        obj = product_type_factory.create(name="test_type")
+        assert obj.__str__() == "test_type"
+
+    def test_name_field_max_length(self, product_type_factory):
+        name = "x" * 80
+        obj = product_type_factory(name=name)
+        if len(obj.name) > 100:
+            with pytest.raises(ValidationError) as e:
+                obj.full_clean()
+        else:
+            assert len(obj.name) < 100
 
 
 # #!TestAttributeModel
