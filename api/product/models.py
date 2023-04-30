@@ -75,12 +75,12 @@ class Product(TimeStampedModel):
         _("product slug"), max_length=255, unique=True, db_index=True, blank=True
     )
     is_active = models.BooleanField(_("is active product"), default=False)
-    # product_type = models.ForeignKey(
-    #     "ProductType",
-    #     verbose_name="product type",
-    #     on_delete=models.PROTECT,
-    #     null=True,
-    # )
+    product_type = models.ForeignKey(
+        "ProductType",
+        verbose_name="product type",
+        on_delete=models.PROTECT,
+        null=True,
+    )
 
     # => if you want add new query methods to django objects model
     objects = ActiveQueryset.as_manager()
@@ -144,6 +144,12 @@ class ProductLine(models.Model):
         unique=True,
     )
     stock_qty = models.IntegerField(_("stock quantity"), default=0)
+    product_type = models.ForeignKey(
+        "ProductType",
+        verbose_name="product type",
+        on_delete=models.PROTECT,
+        null=True,
+    )
     product = models.ForeignKey(
         Product,
         related_name="products",
@@ -253,7 +259,7 @@ class ProductImage(models.Model):
         verbose_name_plural = "Product Images"
 
     def __str__(self):
-        return str(self.order)
+        return f"{self.productline.sku}_img"
 
     def clean(self, exclude=None):
         qs = ProductImage.objects.filter(productline=self.productline)
@@ -265,12 +271,13 @@ class ProductImage(models.Model):
         try:
             super(ProductImage, self).save(*args, **kwargs)
         except Exception as e:
-            self.full_cean()
+            self.full_clean()
 
 
 #!ProductType
 class ProductType(models.Model):
     name = models.CharField(_("product type name"), max_length=100)
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True)
     attribute = models.ManyToManyField(
         Attribute, through="ProductTypeAttribute", related_name="product_type_attribute"
     )
