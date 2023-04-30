@@ -12,10 +12,10 @@ from .factories import (
     CategoryFactory,
     ProductFactory,
     ProductLineFactory,
-    # ProductImageFactory,
+    ProductImageFactory,
     # AttributeFactory,
     # AttributeValueFactory,
-    # ProductTypeFactory,
+    ProductTypeFactory,
 )
 
 
@@ -24,10 +24,10 @@ from .factories import (
 register(CategoryFactory)
 register(ProductFactory)
 register(ProductLineFactory)
-# register(ProductImageFactory)
+register(ProductImageFactory)
 # register(AttributeFactory)
 # register(AttributeValueFactory)
-# register(ProductTypeFactory)
+register(ProductTypeFactory)
 
 
 #!api_client
