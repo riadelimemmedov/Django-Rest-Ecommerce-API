@@ -228,15 +228,33 @@ class TestProductTypeModel:
 
 
 # #!TestAttributeModel
-# class TestAttributeModel:
-#     def test_str_method(self, attribute_factory):
-#         obj = attribute_factory(name="test_attribute")
-#         assert obj.__str__() == "test_attribute"
+class TestAttributeModel:
+    def test_str_method(self, attribute_factory):
+        obj = attribute_factory(name="test_attribute")
+        assert obj.__str__() == "test_attribute"
+
+    def test_name_field_max_length(self, attribute_factory):
+        name = "x" * 80
+        obj = attribute_factory(name=name)
+        if len(obj.name) > 100:
+            with pytest.raises(ValidationError) as e:
+                obj.full_clean()
+        else:
+            assert len(obj.name) < 100
 
 
 # #!TestAttributeValueModel
-# class TestAttributeValueModel:
-#     def test_str_method(self, attribute_value_factory, attribute_factory):
-#         obj_a = attribute_factory(name="test_attribute")
-#         obj_b = attribute_value_factory(attr_value="test_value", attribute=obj_a)
-#         assert obj_b.__str__() == "test_value --- test_attribute"
+class TestAttributeValueModel:
+    def test_str_method(self, attribute_value_factory, attribute_factory):
+        obj_a = attribute_factory(name="test_attribute")
+        obj_b = attribute_value_factory(attr_value="test_value", attribute=obj_a)
+        assert obj_b.__str__() == "test_value --- test_attribute"
+
+    def test_name_field_max_length(self, attribute_value_factory):
+        name = "x" * 80
+        obj = attribute_value_factory(attr_value=name)
+        if len(obj.attr_value) > 100:
+            with pytest.raises(ValidationError) as e:
+                obj.full_clean()
+        else:
+            assert len(obj.attr_value) < 100
