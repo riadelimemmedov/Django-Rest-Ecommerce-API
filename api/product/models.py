@@ -74,6 +74,13 @@ class Product(TimeStampedModel):
     pr_slug = models.SlugField(
         _("product slug"), max_length=255, unique=True, db_index=True, blank=True
     )
+    attribute_value = models.ManyToManyField(
+        "AttributeValue",
+        verbose_name="attribute value product line",
+        through="ProductAttributeValue",
+        related_name="product_attribute_value",
+        null=True,
+    )
     is_active = models.BooleanField(_("is active product"), default=False)
     product_type = models.ForeignKey(
         "ProductType",
@@ -159,13 +166,13 @@ class ProductLine(models.Model):
     is_active = models.BooleanField(_("is active productline"), default=False)
     order = OrderField(unique_for_field="product", blank=True, null=True)
     weight = models.FloatField(_("product weight"), default=0)
-    # attribute_value = models.ManyToManyField(
-    #     AttributeValue,
-    #     verbose_name="attribute value product line",
-    #     through="ProductLineAttributeValue",
-    #     related_name="product_line_attribute_value",
-    #     null=True,
-    # )
+    attribute_value = models.ManyToManyField(
+        AttributeValue,
+        verbose_name="attribute value product line",
+        through="ProductLineAttributeValue",
+        related_name="product_line_attribute_value",
+        null=True,
+    )
     created_at = models.DateTimeField(
         _("product created at"), auto_now_add=True, editable=False, null=True
     )
@@ -194,8 +201,26 @@ class ProductLine(models.Model):
 
 
 #!ProductLineAttributeValue
+class ProductAttributeValue(models.Model):
+    attr_value = models.ForeignKey(
+        AttributeValue,
+        verbose_name="product attribute value",
+        on_delete=models.CASCADE,
+        related_name="product_value_av",
+    )
+
+    product = models.ForeignKey(
+        Product,
+        verbose_name="product",
+        on_delete=models.CASCADE,
+        related_name="product_value_p",
+    )
+
+    class Meta:
+        unique_together = ["attr_value", "product"]
 
 
+#!ProductLineAttributeValue
 class ProductLineAttributeValue(models.Model):
     attr_value = models.ForeignKey(
         AttributeValue,
