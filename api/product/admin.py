@@ -44,10 +44,15 @@ class ProductImageInline(admin.TabularInline):
 
 
 # *AttributeValueInline
-# class AttributeValueInline(admin.TabularInline):
-#     # model = m.AttributeValue.product_line_attribute_value.through
-#     # model = m.AttributeValue
-#     extra = 1
+class AttributeValueInline(admin.TabularInline):
+    model = m.AttributeValue.product_line_attribute_value.through
+    extra = 1
+
+
+# *AttributeValueProductInline
+class AttributeValueProductInline(admin.TabularInline):
+    model = m.AttributeValue.product_attribute_value.through
+    extra = 1
 
 
 # *AttributeInline
@@ -74,14 +79,14 @@ class CategoryAdmin(admin.ModelAdmin):
 #!ProductAdmin
 @admin.register(m.Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductLineInline]
+    inlines = [ProductLineInline, AttributeValueProductInline]
     list_display = ["name", "is_digital", "is_active", "pid", "created", "modified"]
 
 
 #!ProductLineAdmin
-# @admin.register(m.ProductLine)
-# class ProductLineAdmin(admin.ModelAdmin):
-#     inlines = [ProductImageInline, AttributeValueInline]
+@admin.register(m.ProductLine)
+class ProductLineAdmin(admin.ModelAdmin):
+    inlines = [ProductImageInline, AttributeValueInline]
 
 
 #!ProductTypeAdmin
