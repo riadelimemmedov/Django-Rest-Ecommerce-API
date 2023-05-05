@@ -12,7 +12,7 @@ SITE_NAME = ""  # Domain Name
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 #!App Name
-APP_NAME = "ADMIN"  # Default ADMIN,PRODUCT
+APP_NAME = "PRODUCT"  # Default ADMIN,PRODUCT
 
 #!SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
