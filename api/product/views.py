@@ -103,7 +103,17 @@ class ProductViewSet(viewsets.ViewSet):
         """
         print("Category Slug Value ", categoryslug)
 
-        serializer = ProductSerializer(
-            self.queryset.filter(category__ctg_slug__icontains=categoryslug), many=True
+        serializer = ProductCategorySerializer(
+            self.queryset.filter(category__ctg_slug__icontains=categoryslug)
+            .prefetch_related(
+                Prefetch("products", queryset=ProductLine.objects.order_by("order"))
+            )
+            .prefetch_related(
+                Prefetch(
+                    "products__product_image",
+                    queryset=ProductImage.objects.filter(order=1),
+                )
+            ),
+            many=True,
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
