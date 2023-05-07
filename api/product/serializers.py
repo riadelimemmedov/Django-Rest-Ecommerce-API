@@ -8,11 +8,18 @@ from .models import *
 
 #!CategorySerializer
 class CategorySerializer(serializers.ModelSerializer):
+    category = serializers.CharField(source="name")
     parent = serializers.CharField(source="parent.name", read_only=True)
 
     class Meta:
         model = Category
-        fields = ["name", "parent"]
+        fields = ["category", "parent"]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if len(data) == 1:
+            data.update({"parent": ""})
+        return data
 
 
 #!ProductImageSerializer
@@ -36,6 +43,33 @@ class AttributeValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttributeValue
         fields = ["attribute", "attr_value"]
+
+
+# *ProductLineCategorySerializer
+class ProductLineCategorySerializer(serializers.ModelSerializer):
+    product_image = ProductImageSerializer(many=True)
+
+    class Meta:
+        model = ProductLine
+        fields = ["price", "product_image"]
+
+
+# *ProductCategorySerializer
+class ProductCategorySerializer(serializers.ModelSerializer):
+    products = ProductLineCategorySerializer(many=True)
+
+    class Meta:
+        model = Product
+        fields = ["name", "pr_slug", "pid", "created", "products"]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        x = data.pop("products")
+        price = x[0]["price"]
+        product_image = x[0]["product_image"]
+        data.update({"price": price})
+        data.update({"image": product_image})
+        return data
 
 
 #!ProductLineSerializer
