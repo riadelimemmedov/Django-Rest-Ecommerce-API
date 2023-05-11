@@ -71,9 +71,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 #!BrandAdmin
-# @admin.register(m.Brand)
-# class BrandAdmin(admin.ModelAdmin):
-#     model = m.Brand
+@admin.register(m.Brand)
+class BrandAdmin(admin.ModelAdmin):
+    model = m.Brand
 
 
 #!ProductAdmin
