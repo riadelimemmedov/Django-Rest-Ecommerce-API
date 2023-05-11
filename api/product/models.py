@@ -57,6 +57,19 @@ class Category(MPTTModel):
         verbose_name_plural = "Categorys"
 
 
+#!Brand
+class Brand(models.Model):
+    name = models.CharField(_("brand name"), max_length=100)
+    is_active = models.BooleanField(_("is active brand"), default=False)
+
+    def __str__(self):
+        return f"{self.name} --- {self.is_active}"
+
+    class Meta:
+        verbose_name = "Brand"
+        verbose_name_plural = "Brands"
+
+
 #!Product
 class Product(TimeStampedModel):
     name = models.CharField(_("product name"), max_length=100)
