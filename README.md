@@ -79,4 +79,4 @@ Installation and Setup
             * An SQLite database and be compatible with future migration to other database technologies.
 
 ###
-![alt](D:\DRF-Ecommerce\Screenshot 2023-05-13 193317.png)
+<img src="D:\DRF-Ecommerce\Screenshot 2023-05-13 193317.png">
