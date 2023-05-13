@@ -75,4 +75,4 @@ Installation and Setup
 
 ###
 
-<img src="D:\DRF-Ecommerce\Screenshot 2023-05-13 193317.png">
+![alt](D:\DRF-Ecommerce\Screenshot 2023-05-13 193317.png)
