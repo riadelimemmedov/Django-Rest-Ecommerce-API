@@ -1,0 +1,24 @@
+What Visitor Design Pattern:
+	The visitor design pattern is a behavioral design pattern that allows adding new behaviors or operations to a collection of objects without changing their structure. 
+In Python, the visitor design pattern is implemented using the following steps:
+
+What advantages and disadvantages of use Visitor Design Pattern:	
+	
+The Visitor Design Pattern has several advantages and disadvantages.
+
+Advantages:
+
+	Separation of concerns: The pattern separates the algorithm from the object structure, which makes it easier to add new operations without modifying the existing code.
+	Open/closed principle: The pattern follows the open/closed principle, which means that the classes are open for extension but closed for modification.
+	Extensibility: The pattern makes it easy to add new operations to the object structure by adding a new visitor class.
+	Type-safety: The visitor pattern ensures that the correct visit method is called based on the object type, which ensures type safety.
+
+
+Disadvantages:
+	Complexity: The visitor pattern can be complex to implement and maintain, especially in large and complex object structures.
+	Tight coupling: The pattern can create tight coupling between the visitor and the elements of the object structure.
+	Performance: The pattern can have performance implications, especially when working with large object structures, as each element needs to be visited.
+	Inflexibility: The pattern can be inflexible in cases where the object structure changes frequently or the operations performed on the object structure are not well-defined or can change.
+	Overall, the Visitor Design Pattern can be a powerful tool in certain situations where a clear separation of concerns and type-safety is required, but it should be used judiciously and with consideration for its potential complexity and performance implic
+
+        
