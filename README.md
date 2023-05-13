@@ -75,4 +75,4 @@ Installation and Setup
 
 ###
 
-![alt](D:\DRF-Ecommerce\Screenshot 2023-05-13 193317.png)
+![alt](https://raw.githubusercontent.com/riadelimemmedov/Django-Rest-Ecommerce-API/postgress-branch/database.png)
